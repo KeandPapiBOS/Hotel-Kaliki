@@ -1,1 +1,151 @@
 @import "tailwindcss";
+
+@theme {
+  --color-ink: #0b2530;
+  --color-abyss: #071b23;
+  --color-deep: #0e3341;
+  --color-tide: #155a6b;
+  --color-foam: #9ed8cb;
+  --color-shell: #f4efe3;
+  --color-sand: #e9dfc7;
+  --color-amber: #e8a34c;
+  --color-coral: #e4643f;
+
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Plus Jakarta Sans", "Segoe UI", Tahoma, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-shell);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-amber);
+  color: var(--color-abyss);
+}
+
+/* ---------- texture ---------- */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+}
+
+/* ---------- keyframes ---------- */
+@keyframes kenburns {
+  from { transform: scale(1.06) translate3d(0, 0, 0); }
+  to   { transform: scale(1.19) translate3d(-1.8%, -2.2%, 0); }
+}
+.kenburns { animation: kenburns 24s ease-in-out infinite alternate; will-change: transform; }
+
+@keyframes marqueeSlide {
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeSlide 30s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+
+@keyframes spinSlow { to { transform: rotate(360deg); } }
+.spin-slow { animation: spinSlow 26s linear infinite; }
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+.floaty { animation: floaty 6.5s ease-in-out infinite; }
+
+@keyframes dashMove { to { stroke-dashoffset: -420; } }
+.route-dash { animation: dashMove 14s linear infinite; }
+
+@keyframes pulseRing {
+  0%   { transform: scale(0.55); opacity: 0.9; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+.pulse-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulseRing 2.4s ease-out infinite;
+}
+
+@keyframes waveDrift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-90px); }
+}
+.wave-drift { animation: waveDrift 7s linear infinite alternate; }
+
+@keyframes fadeQuote {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.quote-fade { animation: fadeQuote 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+
+@keyframes bobCue {
+  0%, 100% { transform: translateY(0); opacity: 0.9; }
+  50%      { transform: translateY(9px); opacity: 0.4; }
+}
+.bob-cue { animation: bobCue 1.9s ease-in-out infinite; }
+
+/* ---------- scroll reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+
+.line-mask { overflow: hidden; display: block; }
+.line-mask > span {
+  display: block;
+  transform: translateY(112%);
+  transition: transform 0.95s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.in-view .line-mask > span { transform: translateY(0); }
+.in-view .line-mask:nth-child(2) > span { transition-delay: 0.12s; }
+.in-view .line-mask:nth-child(3) > span { transition-delay: 0.24s; }
+
+/* ---------- misc ---------- */
+.text-outline {
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--color-ink) 38%, transparent);
+  color: transparent;
+}
+
+input[type="date"] { color-scheme: dark; }
+input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.65; }
+
+.squiggle-underline {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='10' viewBox='0 0 120 10'%3E%3Cpath d='M0 6 Q 10 0 20 6 T 40 6 T 60 6 T 80 6 T 100 6 T 120 6' fill='none' stroke='%23e8a34c' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+  background-size: 120px 10px;
+  padding-bottom: 12px;
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .kenburns, .marquee-track, .spin-slow, .floaty, .route-dash,
+  .pulse-ring, .wave-drift, .bob-cue {
+    animation: none !important;
+  }
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .line-mask > span { transform: none !important; transition: none !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
